@@ -62,6 +62,8 @@ public abstract class ScheduledEventSource<T extends OversigtEvent> extends Abst
 	private String lastFailureDescription = null;
 	private Throwable lastFailureException = null;
 
+	private final EventSourceStats stats = new EventSourceStats();
+
 	protected String getEventId() {
 		return eventId;
 	}
@@ -81,12 +83,21 @@ public abstract class ScheduledEventSource<T extends OversigtEvent> extends Abst
 
 		try {
 			logTrace(getLogger(), "Starting to produce event");
-			if (sendEvent(produceEvent())) {
+			final T event;
+			final long durationMillis;
+			final long startTime = System.currentTimeMillis();
+			try {
+				event = produceEvent();
+			} finally {
+				durationMillis = System.currentTimeMillis() - startTime;
+			}
+			if (sendEvent(event)) {
 				resetFailure();
 			} else {
 				sendEvent(new ErrorEvent(getLastFailureDescription()));
 			}
-			logTrace(getLogger(), "Done producing event");
+			stats.addExecutionTime(durationMillis);
+			logDebug(getLogger(), "Produced event. Execution time: %s ms", durationMillis);
 			setLastRunNow(true);
 		} catch (Throwable e) {
 			sendEvent(new ErrorEvent(e));
@@ -159,7 +170,8 @@ public abstract class ScheduledEventSource<T extends OversigtEvent> extends Abst
 	}
 
 	/**
-	 * Clears the timestamp of the last iteration of this service resulting in an immediate execution of this event source within the next second.
+	 * Clears the timestamp of the last iteration of this service resulting in an immediate
+	 * execution of this event source within the next second.
 	 */
 	public final void scheduleImmediateExecution() {
 		immediateExecution.set(true);

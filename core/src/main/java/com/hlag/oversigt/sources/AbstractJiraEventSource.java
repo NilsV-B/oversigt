@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -234,6 +235,9 @@ public abstract class AbstractJiraEventSource<T extends OversigtEvent> extends S
 
 		while (throwable != null && throwable != previous) {
 			if (throwable instanceof JiraClientException) {
+				if (throwable.getCause() != null && throwable instanceof TimeoutException) {
+					return failure("JIRA query timed out.");
+				}
 				return failure(throwable.getMessage(), throwable.getCause());
 			} else if (throwable instanceof RestClientException) {
 				RestClientException rce = (RestClientException) throwable;
