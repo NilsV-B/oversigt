@@ -35,6 +35,7 @@ import com.hlag.oversigt.controller.EventSourceInstanceController;
 import com.hlag.oversigt.properties.SerializableProperty;
 import com.hlag.oversigt.properties.SerializablePropertyController;
 import com.hlag.oversigt.security.Role;
+import com.hlag.oversigt.util.JsonUtils;
 import com.hlag.oversigt.util.TypeUtils.SerializablePropertyMember;
 import com.hlag.oversigt.util.TypeUtils.SerializablePropertyMember.MemberMissingException;
 import com.hlag.oversigt.web.api.ApiAuthenticationFilter;
@@ -77,6 +78,27 @@ public class SerializablePropertyResource {
 				.map(c -> new SerializablePropertyDescription(c.getSimpleName(),
 						spController.getDescription(c.getSimpleName())))
 				.collect(Collectors.toList());
+	}
+
+	@GET
+	@Path("/schema/{name}")
+	@ApiResponses({
+			@ApiResponse(code = 200,
+					message = "Returns a JSON schema of the requested serializable property",
+					response = String.class),
+			@ApiResponse(code = 404,
+					message = "The requested serializable property type does not exist",
+					response = ErrorResponse.class) })
+	@JwtSecured
+	@ApiOperation(value = "Read JSONSchema for a serializable property",
+			authorizations = { @Authorization(value = ApiAuthenticationFilter.API_OPERATION_AUTHENTICATION) })
+	@NoChangeLog
+	public Response getJsonSchema(@PathParam("name") @NotBlank final String className) {
+		try {
+			return ok(JsonUtils.toJsonSchema(spController.getClass(className))).build();
+		} catch (@SuppressWarnings("unused") final NoSuchElementException e) {
+			return ErrorResponse.notFound("Serializable property '" + className + "' does not exist.");
+		}
 	}
 
 	@GET

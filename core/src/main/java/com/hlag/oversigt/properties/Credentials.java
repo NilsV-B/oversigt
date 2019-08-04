@@ -22,6 +22,11 @@ import com.hlag.oversigt.properties.SerializableProperty.Description;
 public class Credentials extends SerializableProperty {
 	public static final Credentials EMPTY = new Credentials(0, "", "", "", "");
 
+	@JsonCreator
+	static Credentials fromId(final String idString) {
+		return SerializablePropertyController.fromId(Credentials.class, idString);
+	}
+
 	@Member(icon = "user", size = 3, mayBeEmpty = true)
 	private String username;
 

@@ -45,6 +45,8 @@ public class OversigtModule extends AbstractModule {
 	/** {@inheritDoc} */
 	@Override
 	protected void configure() {
+		requestStaticInjection(SerializablePropertyController.class);
+
 		// some interesting values
 		bind(String.class).annotatedWith(Names.named("application-id")).toInstance(UUID.randomUUID().toString());
 

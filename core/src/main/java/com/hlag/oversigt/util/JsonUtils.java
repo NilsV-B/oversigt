@@ -265,7 +265,14 @@ public final class JsonUtils {
 					"enumSource",
 					Arrays.asList(map("title", "{{item.title}}", "value", "{{item.value}}", "source", abc)));
 		} else if (SerializableProperty.class.isAssignableFrom(clazz)) {
-			return map("type", "string", "$ref", "/schema/" + clazz.getName(), "oversigt-property", clazz.getName());
+			return map("type",
+					"string",
+					"$ref",
+					"/schema/" + clazz.getName(),
+					"oversigt-property",
+					clazz.getName(),
+					"serializable-property",
+					clazz.getSimpleName());
 		} else if (clazz.isArray() || Collection.class.isAssignableFrom(clazz)) {
 			final Type componentType = clazz.isArray() ? clazz.getComponentType() : clazz.getGenericInterfaces()[0];
 			final Map<String, Object> map = map("type",

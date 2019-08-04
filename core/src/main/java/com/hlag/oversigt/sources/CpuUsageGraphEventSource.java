@@ -18,6 +18,7 @@ import com.hlag.oversigt.core.eventsource.EventSource;
 import com.hlag.oversigt.core.eventsource.EventSourceStatisticsManager.StatisticsCollector.StartedAction;
 import com.hlag.oversigt.core.eventsource.Property;
 import com.hlag.oversigt.core.eventsource.ScheduledEventSource;
+import com.hlag.oversigt.properties.Credentials;
 import com.hlag.oversigt.properties.JsonBasedData;
 import com.hlag.oversigt.sources.data.JsonHint;
 import com.hlag.oversigt.sources.data.JsonHint.ArrayStyle;
@@ -132,6 +133,9 @@ public class CpuUsageGraphEventSource extends ScheduledEventSource<ComplexGraphE
 
 		@NotNull
 		private int port = 22;
+
+		@NotNull
+		private Credentials credentials = Credentials.EMPTY;
 
 		@NotNull
 		private String username = "username";

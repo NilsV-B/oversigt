@@ -19,7 +19,6 @@ import edu.umd.cs.findbugs.annotations.Nullable;
  * @author neumaol
  */
 public abstract class SerializableProperty implements Comparable<SerializableProperty> {
-
 	private final int id;
 
 	private String name;

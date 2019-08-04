@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -26,6 +27,17 @@ import edu.umd.cs.findbugs.annotations.Nullable;
 @Singleton
 public class SerializablePropertyController {
 	private static final Logger LOGGER = LoggerFactory.getLogger(SerializablePropertyController.class);
+
+	@Inject
+	private static @Nullable SerializablePropertyController INSTANCE;
+
+	static <T extends SerializableProperty> T fromId(final Class<T> clazz, final String idString) {
+		return fromId(clazz, Integer.parseInt(idString));
+	}
+
+	static <T extends SerializableProperty> T fromId(final Class<T> clazz, final int id) {
+		return Objects.requireNonNull(INSTANCE).getProperty(clazz, id);
+	}
 
 	private final Map<String, Class<SerializableProperty>> namesToClasses;
 

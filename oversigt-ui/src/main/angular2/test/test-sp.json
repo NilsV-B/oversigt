@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "$id": "http://schema.hlag.com/oversigt/type/[Lcom.hlag.oversigt.sources.CpuUsageGraphEventSource$Server;",
+  "title": "Server[]",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "title": "Server",
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Name"
+      },
+      "hostname": {
+        "type": "string",
+        "title": "Hostname",
+        "format": "hostname"
+      },
+      "port": {
+        "type": "number",
+        "minimum": -2147483648,
+        "maximum": 2147483647,
+        "multipleOf": 1.0,
+        "title": "Port"
+      },
+      "credentials": {
+        "type": "string",
+        "$ref": "/schema/com.hlag.oversigt.properties.Credentials",
+        "oversigt-property": "com.hlag.oversigt.properties.Credentials",
+        "title": "Credentials"
+      },
+      "username": {
+        "type": "string",
+        "title": "Username"
+      },
+      "password": {
+        "type": "string",
+        "title": "Password",
+        "format": "password"
+      },
+      "operatingSystem": {
+        "type": "string",
+        "uniqueItems": true,
+        "oversigt-ids": [
+          "Aix",
+          "Linux"
+        ],
+        "enumSource": [
+          {
+            "title": "{{item.title}}",
+            "value": "{{item.value}}",
+            "source": [
+              {
+                "value": "Aix",
+                "title": "Aix"
+              },
+              {
+                "value": "Linux",
+                "title": "Linux"
+              }
+            ]
+          }
+        ],
+        "title": "OperatingSystem"
+      }
+    },
+    "required": [
+      "name",
+      "hostname",
+      "port",
+      "credentials",
+      "username",
+      "password",
+      "operatingSystem"
+    ],
+    "additionalProperties": false,
+    "headerTemplate": "{{ self.name }}"
+  },
+  "additionalItems": false,
+  "format": "tabs"
+}

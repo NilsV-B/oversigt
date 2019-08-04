@@ -15,6 +15,7 @@ export class JsonSchemaProperty {
   items?: JsonSchemaProperty;
   enumSource?: EnumSource[];
   headerTemplate?: string;
+  $ref?: string;
 }
 
 export class EnumSource {

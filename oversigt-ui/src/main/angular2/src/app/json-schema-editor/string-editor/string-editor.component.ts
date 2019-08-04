@@ -1,6 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { JsonSchemaProperty } from '../schema-editor/schema-editor.component';
 import { AbstractValueAccessor, MakeProvider } from 'src/app/_editor/abstract-value-accessor';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { SerializableValueService } from 'src/oversigt-client';
 
 @Component({
   selector: 'app-json-string',
@@ -17,10 +19,27 @@ export class StringEditorComponent extends AbstractValueAccessor implements OnIn
   valueToTitle: {[key: string]: string} = {};
   id = Math.round(Math.random() * 10000);
 
+  constructor(private sp: SerializableValueService) {
+    super();
+  }
+
   ngOnInit() {
     // TODO: handle unique items
 
-    if (this.schemaObject.enumSource !== undefined && this.schemaObject.enumSource.length === 1) {
+    this.initSchema();
+  }
+
+  private initSchema(): void {
+    if (this.schemaObject.type === 'string' && this.schemaObject.$ref !== undefined) {
+      this.sp.getJsonSchema(this.schemaObject['serializable-property']).subscribe(
+        schema => {
+          this.schemaObject.$ref = undefined;
+          this.schemaObject['enumSource'] = schema['enumSource'];
+          this.schemaObject['oversigt-ids'] = schema['oversigt-ids'];
+          this.initSchema();
+        }
+      );
+    } else if (this.schemaObject.enumSource !== undefined && this.schemaObject.enumSource.length === 1) {
       this.editorType = 'select';
       const enumSource = this.schemaObject.enumSource[0];
       // TODO: use interpreter code here
